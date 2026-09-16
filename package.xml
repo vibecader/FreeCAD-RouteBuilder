@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<package format="1">
+  <name>RouteBuilder</name>
+  <description>3D orthogonal route builder for FreeCAD</description>
+  <version>1.0.0</version>
+  <date>2026-09-16</date>
+  <license file="Lic/LICENSE.txt">LGPL-2.1-or-later</license>
+  <maintainer email="korney92d1@yandex.ru">VibeCADer</maintainer>
+  <url type="repository" branch="main">https://github.com/vibecader/FreeCAD-RouteBuilder</url>
+  <url type="readme">https://github.com/vibecader/FreeCAD-RouteBuilder/blob/main/README.md</url>
+  <content>
+    <workbench>
+      <name>RouteBuilder</name>
+      <classname>ParametricWireWorkbench</classname>
+      <icon>Icons/WorkbenchIcon.svg</icon>
+      <subdirectory>./</subdirectory>
+    </workbench>
+  </content>
+</package>
