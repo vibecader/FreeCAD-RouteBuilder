@@ -1,5 +1,5 @@
-# Parametric Wire Workbench by KorneyCAD
-# Copyright (C) 2026 KorneyCAD
+# FreeCAD-RouteBuilder by VibeCADer
+# Copyright (C) 2026 VibeCADer
 # Contact: korney92d1@yandex.ru
 # SPDX-License-Identifier: LGPL-2.1-or-later
 

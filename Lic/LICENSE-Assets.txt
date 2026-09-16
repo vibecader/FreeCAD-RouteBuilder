@@ -1,5 +1,6 @@
-Parametric Wire Workbench — Icons and Documentation
-Copyright (C) 2026 Andrei
+FreeCAD-RouteBuilder
+Copyright (C) 2026 VibeCADer
+Contact: korney92d1@yandex.ru
 
 This work is licensed under the Creative Commons
 Attribution-ShareAlike 4.0 International License.

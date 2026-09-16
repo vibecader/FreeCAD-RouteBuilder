@@ -1,5 +1,5 @@
-Parametric Wire Workbench by KorneyCAD
-Copyright (C) 2026 KorneyCAD
+FreeCAD-RouteBuilder
+Copyright (C) 2026 VibeCADer
 Contact: korney92d1@yandex.ru
 
 This library is free software; you can redistribute it and/or

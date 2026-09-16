@@ -1,5 +1,5 @@
-# Parametric Wire Workbench by KorneyCAD
-# Copyright (C) 2026 KorneyCAD
+# FreeCAD-RouteBuilder by VibeCADer
+# Copyright (C) 2026 VibeCADer
 # Contact: korney92d1@yandex.ru
 # SPDX-License-Identifier: LGPL-2.1-or-later
 
@@ -76,6 +76,9 @@ class AddVectorDialog(QtGui.QDialog):
         if self.phantom:
             return
         doc = App.ActiveDocument
+        old = doc.getObject("_AddVectorPhantom")
+        if old:
+            doc.removeObject("_AddVectorPhantom")
         self.phantom = doc.addObject("Part::Feature", "_AddVectorPhantom")
         self.phantom.ViewObject.LineWidth = 3.0
         doc.recompute()
@@ -191,6 +194,7 @@ class ParametricWireTaskPanel:
         self._highlight_segment = None
         self._vectors_updating = False
         self._selected_vertex_key = None
+        self._overlap_cache = None
         self.form = QtGui.QWidget()
         self.form.setWindowTitle("Parametric Wire")
         self.layout = QtGui.QVBoxLayout(self.form)
@@ -278,7 +282,6 @@ class ParametricWireTaskPanel:
     # Переключатель точек
     # ============================================================
     def _toggle_points(self):
-        """Переключает отображение точек."""
         if not hasattr(self.obj, "ShowPoints"):
             App.Console.PrintWarning(
                 "Свойство ShowPoints отсутствует. Пересоздайте линию.\n"
@@ -289,7 +292,6 @@ class ParametricWireTaskPanel:
         App.ActiveDocument.recompute()
 
     def _update_toggle_button_text(self):
-        """Обновляет текст кнопки."""
         if not hasattr(self, "toggle_points_btn"):
             return
         if not hasattr(self.obj, "ShowPoints"):
@@ -520,6 +522,7 @@ class ParametricWireTaskPanel:
         App.Console.PrintMessage(f"Пересчёт выполнен. Обновлено тел: {count}\n")
 
     def _on_tab_changed(self, index):
+        """Скрывает фантом при уходе с Builder. Готовит Vectors и Attachment."""
         if self.phantom:
             try:
                 if index == 0:
@@ -529,9 +532,18 @@ class ParametricWireTaskPanel:
             except Exception:
                 pass
 
-        if index == 2:
+        if index == 2:  # Vectors
             self._ensure_vectors_table()
             self._refresh_vectors_table()
+            self._remove_highlight()
+        elif index == 3:  # Attachment
+            self._update_attach_marker()
+            self._check_selection()
+            # Принудительная перерисовка — маркеры появляются сразу
+            try:
+                Gui.SendMsgToActiveView("ViewFit")
+            except Exception:
+                pass
         else:
             self._remove_highlight()
 
@@ -817,8 +829,19 @@ class ParametricWireTaskPanel:
             elif dir_str == "-Z":
                 new_point = last + App.Vector(0, 0, -length)
             elif dir_str == "DIAG":
-                row += 1
-                continue
+                # DIAG — берём координаты из существующей таблицы
+                try:
+                    px = sheet_p.get("A" + str(row))
+                    py = sheet_p.get("B" + str(row))
+                    pz = sheet_p.get("C" + str(row))
+                    if px is not None and py is not None and pz is not None:
+                        new_point = App.Vector(float(px), float(py), float(pz))
+                    else:
+                        row += 1
+                        continue
+                except ValueError:
+                    row += 1
+                    continue
             else:
                 row += 1
                 continue
@@ -998,18 +1021,20 @@ class ParametricWireTaskPanel:
         except Exception:
             return
 
-        base_size = focal_distance * 0.01
-        base_size = max(3.0, min(base_size, 30.0))
+        base_size = focal_distance * 0.08
+        base_size = max(5.0, min(base_size, 80.0))
 
         doc = App.ActiveDocument
 
-        green = doc.getObject("_AttachmentMarker")
-        if green:
+        # Красный маркер привязки (текущая привязка)
+        red = doc.getObject("_AttachmentMarker")
+        if red:
             try:
-                green.ViewObject.PointSize = base_size * 1.0
+                red.ViewObject.PointSize = base_size * 1.0
             except Exception:
                 pass
 
+        # Синий маркер (выбранная вершина/ребро/грань)
         blue = doc.getObject("_NewVertexMarker")
         if blue:
             try:
@@ -1017,20 +1042,13 @@ class ParametricWireTaskPanel:
             except Exception:
                 pass
 
+        # Маркер точки из таблицы Points
         point_marker = doc.getObject("_PointMarker")
         if point_marker:
             try:
                 point_marker.ViewObject.PointSize = base_size * 0.9
             except Exception:
                 pass
-
-        points_markers = doc.getObject("_PointsMarkers")
-        if points_markers:
-            try:
-                points_markers.ViewObject.PointSize = base_size * 0.8
-            except Exception:
-                pass
-
     def _check_selection(self):
         try:
             selection = Gui.Selection.getSelectionEx()
@@ -1870,7 +1888,7 @@ class ParametricWireTaskPanel:
         except Exception:
             pass
         doc = App.ActiveDocument
-        for name in ("_AttachmentMarker", "_NewVertexMarker", "_AddVectorPhantom"):
+        for name in ("_AttachmentMarker", "_NewVertexMarker"):
             old = doc.getObject(name)
             if old:
                 doc.removeObject(name)
