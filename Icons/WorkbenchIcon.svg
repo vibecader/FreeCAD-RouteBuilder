@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Фон -->
+  <rect width="64" height="64" fill="#2c3e50" rx="8"/>
+
+  <!-- Буква P: вертикальная линия + петля -->
+  <polyline points="14,52 14,14 28,14 28,30 14,30"
+            fill="none" stroke="#3498db" stroke-width="4"
+            stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Узлы буквы P -->
+  <circle cx="14" cy="52" r="3.5" fill="#e74c3c"/>
+  <circle cx="14" cy="14" r="3.5" fill="#2ecc71"/>
+  <circle cx="28" cy="14" r="3.5" fill="#f39c12"/>
+  <circle cx="28" cy="30" r="3.5" fill="#9b59b6"/>
+  <circle cx="14" cy="30" r="3.5" fill="#1abc9c"/>
+
+  <!-- Буква W: зигзаг сверху вниз -->
+  <polyline points="34,20 40,44 46,30 52,52 58,30"
+            fill="none" stroke="#e67e22" stroke-width="4"
+            stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Узлы буквы W -->
+  <circle cx="34" cy="20" r="3" fill="#e74c3c"/>
+  <circle cx="40" cy="44" r="3" fill="#2ecc71"/>
+  <circle cx="46" cy="30" r="3" fill="#f39c12"/>
+  <circle cx="52" cy="52" r="3" fill="#9b59b6"/>
+  <circle cx="58" cy="30" r="3" fill="#1abc9c"/>
+</svg>

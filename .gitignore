@@ -1,0 +1,19 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# FreeCAD files
+*.FCStd
+*.FCStd1
+*.FCBak
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backup
+*.bak
+
+

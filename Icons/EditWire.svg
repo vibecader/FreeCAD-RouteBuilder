@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" fill="#2c3e50" rx="8"/>
+  <polyline points="6,50 22,35 38,45 52,25" fill="none" stroke="#3498db" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="6" cy="50" r="3.5" fill="#e74c3c"/>
+  <circle cx="22" cy="35" r="3.5" fill="#2ecc71"/>
+  <circle cx="38" cy="45" r="3.5" fill="#f39c12"/>
+  <circle cx="52" cy="25" r="3.5" fill="#9b59b6"/>
+  <!-- Карандаш диагонально -->
+  <path d="M 46 12 L 56 2 L 62 8 L 52 18 Z" fill="#f39c12" stroke="#d35400" stroke-width="1"/>
+  <line x1="52" y1="18" x2="46" y2="12" stroke="#7f8c8d" stroke-width="2"/>
+</svg>
