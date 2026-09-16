@@ -10,8 +10,8 @@ from FreeCADGui import Workbench
 
 
 class ParametricWireWorkbench(Workbench):
-    MenuText = "Parametric Wire"
-    ToolTip = "Параметрические полилинии, тела и экспорт"
+    MenuText = "Route Builder"
+    ToolTip = "Parametric route builder, bodies and export"
     Icon = "/home/andrei/.local/share/FreeCAD/v26-3/Mod/ParametricWireWB/Icons/WorkbenchIcon.svg"
 
     def Initialize(self):
@@ -21,8 +21,8 @@ class ParametricWireWorkbench(Workbench):
             "CreatePipeByTrajectory",
             "ExportToStep"
         ]
-        self.appendToolbar("Parametric Wire", self.list)
-        self.appendMenu("Parametric Wire", self.list)
+        self.appendToolbar("Route Builder", self.list)
+        self.appendMenu("Route Builder", self.list)
 
     def GetClassName(self):
         return "Gui::PythonWorkbench"
@@ -35,8 +35,8 @@ class CreateParametricWireCommand:
         )
         return {
             "Pixmap": icon,
-            "MenuText": "Создать Parametric Wire",
-            "ToolTip": "Создать полилинию из таблицы Spreadsheet"
+            "MenuText": "Create Route",
+            "ToolTip": "Create parametric route from Spreadsheet"
         }
 
     def Activated(self):
@@ -50,7 +50,7 @@ class CreateParametricWireCommand:
 
         doc = App.ActiveDocument
         if not doc:
-            App.Console.PrintError("Нет активного документа.\n")
+            App.Console.PrintError("No active document.\n")
             return
 
         sheets = [obj for obj in doc.Objects if obj.TypeId == "Spreadsheet::Sheet"]
@@ -69,7 +69,7 @@ class CreateParametricWireCommand:
             sheet_names = [sheet.Name for sheet in sheets]
             sheet_labels = [f"{sheet.Label} ({sheet.Name})" for sheet in sheets]
             selected_label, ok = QtGui.QInputDialog.getItem(
-                None, "Выбор таблицы", "Выберите таблицу с координатами:",
+                None, "Select table", "Select the table with coordinates:",
                 sheet_labels, 0, False
             )
             if not ok:
@@ -93,8 +93,8 @@ class EditParametricWireCommand:
         )
         return {
             "Pixmap": icon,
-            "MenuText": "Редактировать Parametric Wire",
-            "ToolTip": "Открыть панель-компас для существующей линии"
+            "MenuText": "Edit Route",
+            "ToolTip": "Open Builder panel for existing route"
         }
 
     def Activated(self):
@@ -113,7 +113,7 @@ class EditParametricWireCommand:
                  and hasattr(obj, "Spreadsheet")]
 
         if not wires:
-            App.Console.PrintError("В документе нет объектов ParametricWire.\n")
+            App.Console.PrintError("No ParametricWire objects in document.\n")
             return
 
         if len(wires) == 1:
@@ -121,7 +121,7 @@ class EditParametricWireCommand:
         else:
             wire_labels = [f"{w.Label} ({w.Name})" for w in wires]
             selected, ok = QtGui.QInputDialog.getItem(
-                None, "Выбор линии", "Выберите Parametric Wire для редактирования:",
+                None, "Select route", "Select Route Builder object to edit:",
                 wire_labels, 0, False
             )
             if not ok:
@@ -148,8 +148,8 @@ class CreatePipeByTrajectoryCommand:
         )
         return {
             "Pixmap": icon,
-            "MenuText": "Создать тело по траектории",
-            "ToolTip": "Создать тело, протянув профиль по Parametric Wire"
+            "MenuText": "Create Body by Trajectory",
+            "ToolTip": "Create body by sweeping profile along the route"
         }
 
     def Activated(self):
@@ -172,8 +172,8 @@ class ExportToStepCommand:
         )
         return {
             "Pixmap": icon,
-            "MenuText": "Экспорт в STEP",
-            "ToolTip": "Экспортировать тела в формат STEP"
+            "MenuText": "Export to STEP",
+            "ToolTip": "Export bodies to STEP format"
         }
 
     def Activated(self):

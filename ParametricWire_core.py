@@ -14,39 +14,39 @@ class ParametricWire:
         self.Type = "ParametricWire"
 
         if not hasattr(obj, "Spreadsheet"):
-            obj.addProperty("App::PropertyLink", "Spreadsheet", "Base", "Ссылка на таблицу")
+            obj.addProperty("App::PropertyLink", "Spreadsheet", "Base", "Link to spreadsheet")
         obj.Spreadsheet = spreadsheet
 
         if not hasattr(obj, "StartRow"):
-            obj.addProperty("App::PropertyInteger", "StartRow", "Base", "Номер первой строки")
+            obj.addProperty("App::PropertyInteger", "StartRow", "Base", "First data row number")
         obj.StartRow = start_row
 
         if not hasattr(obj, "FilletRadius"):
-            obj.addProperty("App::PropertyLength", "FilletRadius", "Base", "Радиус скругления")
+            obj.addProperty("App::PropertyLength", "FilletRadius", "Base", "Fillet radius")
         obj.FilletRadius = 0.0
 
         if not hasattr(obj, "Shape"):
-            obj.addProperty("Part::PropertyPartShape", "Shape", "Base", "Форма полилинии")
+            obj.addProperty("Part::PropertyPartShape", "Shape", "Base", "Polyline shape")
             obj.setEditorMode("Shape", 2)
 
         if not hasattr(obj, "InternalWire"):
-            obj.addProperty("App::PropertyLink", "InternalWire", "Base", "Внутренняя ломаная")
+            obj.addProperty("App::PropertyLink", "InternalWire", "Base", "Internal wire")
             obj.setEditorMode("InternalWire", 2)
 
         # === Отображение ===
         if not hasattr(obj, "ShowPoints"):
-            obj.addProperty("App::PropertyBool", "ShowPoints", "Display", "Показывать точки")
+            obj.addProperty("App::PropertyBool", "ShowPoints", "Display", "Show points")
             obj.ShowPoints = True
 
         # === Привязка к геометрии ===
         if not hasattr(obj, "AttachmentSupport"):
             obj.addProperty("App::PropertyLinkSub", "AttachmentSupport", "Attachment",
-                            "Ссылка на объект привязки (вершина, ребро, грань)")
+                            "Link to attachment object (vertex, edge, face)")
             obj.setEditorMode("AttachmentSupport", 2)
 
         if not hasattr(obj, "AttachmentPosition"):
             obj.addProperty("App::PropertyVector", "AttachmentPosition", "Attachment",
-                            "Вычисленная позиция привязки")
+                            "Computed attachment position")
             obj.setEditorMode("AttachmentPosition", 2)
 
     def onChanged(self, obj, prop):
@@ -100,7 +100,7 @@ class ParametricWire:
 
             return None
         except Exception as e:
-            App.Console.PrintWarning(f"Ошибка чтения привязки: {e}\n")
+            App.Console.PrintWarning(f"Attachment read error: {e}\n")
             return None
 
     def _update_points_markers(self, obj, points):
@@ -133,7 +133,7 @@ class ParametricWire:
             marker.Shape = Part.makeCompound(vertices)
             marker.ViewObject.Visibility = True
         except Exception as e:
-            App.Console.PrintWarning(f"Не удалось создать маркеры точек: {e}\n")
+            App.Console.PrintWarning(f"Failed to create point markers: {e}\n")
 
     def _update_points_labels(self, obj, points):
         """Создаёт/обновляет метки с номерами и координатами."""
@@ -167,7 +167,7 @@ class ParametricWire:
                 label.ViewObject.FontSize = 24
                 label.ViewObject.Visibility = True
         except Exception as e:
-            App.Console.PrintWarning(f"Не удалось создать метки точек: {e}\n")
+            App.Console.PrintWarning(f"Failed to create point labels: {e}\n")
 
     def _update_points_group(self, obj):
         """Создаёт/обновляет группу для точек и меток."""
@@ -223,7 +223,7 @@ class ParametricWire:
         if attachment_pos is None:
             if obj.AttachmentSupport:
                 App.Console.PrintWarning(
-                    "Привязка потеряна. Линия остаётся на последней позиции.\n"
+                    "Attachment lost. Wire stays at last position.\n"
                 )
                 attachment_pos = obj.AttachmentPosition
             else:
@@ -280,7 +280,7 @@ def create_parametric_wire(spreadsheet_name="Spreadsheet", start_row=1):
     doc = App.ActiveDocument
     sheet = doc.getObject(spreadsheet_name)
     if not sheet:
-        App.Console.PrintError(f"Таблица '{spreadsheet_name}' не найдена!\n")
+        App.Console.PrintError(f"Spreadsheet '{spreadsheet_name}' not found!\n")
         return None
 
     obj = doc.addObject("Part::FeaturePython", "ParametricWire")

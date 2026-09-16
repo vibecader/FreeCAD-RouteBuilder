@@ -18,7 +18,7 @@ def export_to_step():
     """Экспортирует выбранные тела в STEP-файл."""
     doc = App.ActiveDocument
     if not doc:
-        App.Console.PrintError("Нет активного документа.\n")
+        App.Console.PrintError("No active document.\n")
         return
 
     # Ищем все Body и Part::Feature в документе
@@ -28,7 +28,7 @@ def export_to_step():
               and not obj.Shape.isNull()]
 
     if not bodies:
-        App.Console.PrintError("В документе нет тел для экспорта.\n")
+        App.Console.PrintError("No bodies to export in document.\n")
         return
 
     # Если тел несколько — показываем диалог выбора
@@ -39,11 +39,11 @@ def export_to_step():
 
         # Диалог с множественным выбором
         dlg = QtGui.QDialog()
-        dlg.setWindowTitle("Экспорт в STEP")
+        dlg.setWindowTitle("Export to STEP")
         dlg.setMinimumWidth(400)
 
         layout = QtGui.QVBoxLayout(dlg)
-        layout.addWidget(QtGui.QLabel("Выберите тела для экспорта:"))
+        layout.addWidget(QtGui.QLabel("Select bodies to export:"))
 
         list_widget = QtGui.QListWidget()
         list_widget.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
@@ -70,13 +70,13 @@ def export_to_step():
             selected_bodies.append(bodies[index])
 
         if not selected_bodies:
-            App.Console.PrintWarning("Ничего не выбрано.\n")
+            App.Console.PrintWarning("Nothing selected.\n")
             return
 
     # Диалог сохранения файла
     file_path, _ = QtGui.QFileDialog.getSaveFileName(
         None,
-        "Сохранить STEP-файл",
+        "Save STEP file",
         "",
         "STEP Files (*.step *.stp);;All Files (*)"
     )
@@ -92,7 +92,7 @@ def export_to_step():
     try:
         Import.export(selected_bodies, file_path)
         App.Console.PrintMessage(
-            f"Экспортировано {len(selected_bodies)} тел(о) в: {file_path}\n"
+            f"Exported {len(selected_bodies)} bodies to: {file_path}\n"
         )
     except Exception as e:
-        App.Console.PrintError(f"Ошибка экспорта: {e}\n")
+        App.Console.PrintError(f"Export error: {e}\n")

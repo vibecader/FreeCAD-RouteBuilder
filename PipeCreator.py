@@ -68,7 +68,7 @@ RECT_DATA = {
 class PipeDialog(QtGui.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Создать тело по траектории")
+        self.setWindowTitle("Create Body by Trajectory")
         self.setMinimumWidth(360)
 
         # === Загружаем сохранённые настройки ===
@@ -83,94 +83,94 @@ class PipeDialog(QtGui.QDialog):
         last_rect_wall = self.params.GetFloat("LastRectWall", 3.0)
 
         layout = QtGui.QVBoxLayout(self)
-        layout.addWidget(QtGui.QLabel("Выберите параметры профиля:"))
+        layout.addWidget(QtGui.QLabel("Select profile parameters:"))
 
         # Тип профиля
         type_layout = QtGui.QHBoxLayout()
-        type_layout.addWidget(QtGui.QLabel("Профиль:"))
+        type_layout.addWidget(QtGui.QLabel("Profile:"))
         self.type_combo = QtGui.QComboBox()
-        self.type_combo.addItems(["Круг (труба)", "Квадрат", "Прямоугольник"])
+        self.type_combo.addItems(["Circle (pipe)", "Square", "Rectangle"])
         self.type_combo.setCurrentIndex(last_profile_idx)
         self.type_combo.currentIndexChanged.connect(self.on_type_changed)
         type_layout.addWidget(self.type_combo)
         layout.addLayout(type_layout)
 
         # === Круг ===
-        self.circle_group = QtGui.QGroupBox("Параметры круга")
+        self.circle_group = QtGui.QGroupBox("Circle parameters")
         circle_layout = QtGui.QFormLayout(self.circle_group)
 
         self.dn_combo = QtGui.QComboBox()
-        self.dn_combo.addItems(sorted(PIPE_DATA.keys(), key=lambda x: int(x[2:])) + ["Свой размер"])
+        self.dn_combo.addItems(sorted(PIPE_DATA.keys(), key=lambda x: int(x[2:])) + ["Custom size"])
         if last_dn in PIPE_DATA:
             self.dn_combo.setCurrentText(last_dn)
         else:
-            self.dn_combo.setCurrentText("Свой размер")
+            self.dn_combo.setCurrentText("Custom size")
         self.dn_combo.currentIndexChanged.connect(self.update_circle_walls)
         circle_layout.addRow("DN:", self.dn_combo)
 
         self.circle_outer = QtGui.QDoubleSpinBox()
         self.circle_outer.setRange(1.0, 5000.0)
         self.circle_outer.setValue(159.0)
-        self.circle_outer.setSuffix(" мм")
-        circle_layout.addRow("Наружный диаметр:", self.circle_outer)
+        self.circle_outer.setSuffix(" mm")
+        circle_layout.addRow("Outer diameter:", self.circle_outer)
 
         self.circle_wall = QtGui.QDoubleSpinBox()
         self.circle_wall.setRange(0.1, 100.0)
         self.circle_wall.setValue(last_wall)
-        self.circle_wall.setSuffix(" мм")
-        circle_layout.addRow("Толщина стенки:", self.circle_wall)
+        self.circle_wall.setSuffix(" mm")
+        circle_layout.addRow("Wall thickness:", self.circle_wall)
 
         layout.addWidget(self.circle_group)
 
         # === Квадрат ===
-        self.square_group = QtGui.QGroupBox("Параметры квадрата")
+        self.square_group = QtGui.QGroupBox("Square parameters")
         square_layout = QtGui.QFormLayout(self.square_group)
 
         self.square_size_combo = QtGui.QComboBox()
-        self.square_size_combo.addItems(sorted(SQUARE_DATA.keys(), key=lambda x: int(x)) + ["Свой размер"])
+        self.square_size_combo.addItems(sorted(SQUARE_DATA.keys(), key=lambda x: int(x)) + ["Custom size"])
         self.square_size_combo.currentIndexChanged.connect(self.update_square_walls)
-        square_layout.addRow("Сторона:", self.square_size_combo)
+        square_layout.addRow("Side:", self.square_size_combo)
 
         self.square_size = QtGui.QDoubleSpinBox()
         self.square_size.setRange(1.0, 2000.0)
         self.square_size.setValue(last_square_size)
-        self.square_size.setSuffix(" мм")
-        square_layout.addRow("Сторона (свой):", self.square_size)
+        self.square_size.setSuffix(" mm")
+        square_layout.addRow("Side (custom):", self.square_size)
 
         self.square_wall = QtGui.QDoubleSpinBox()
         self.square_wall.setRange(0.1, 100.0)
         self.square_wall.setValue(last_square_wall)
-        self.square_wall.setSuffix(" мм")
-        square_layout.addRow("Толщина стенки:", self.square_wall)
+        self.square_wall.setSuffix(" mm")
+        square_layout.addRow("Wall thickness:", self.square_wall)
 
         layout.addWidget(self.square_group)
 
         # === Прямоугольник ===
-        self.rect_group = QtGui.QGroupBox("Параметры прямоугольника")
+        self.rect_group = QtGui.QGroupBox("Rectangle parameters")
         rect_layout = QtGui.QFormLayout(self.rect_group)
 
         self.rect_size_combo = QtGui.QComboBox()
-        self.rect_size_combo.addItems(sorted(RECT_DATA.keys()) + ["Свой размер"])
+        self.rect_size_combo.addItems(sorted(RECT_DATA.keys()) + ["Custom size"])
         self.rect_size_combo.currentIndexChanged.connect(self.update_rect_walls)
-        rect_layout.addRow("Размер (ШxВ):", self.rect_size_combo)
+        rect_layout.addRow("Size (WxH):", self.rect_size_combo)
 
         self.rect_width = QtGui.QDoubleSpinBox()
         self.rect_width.setRange(1.0, 2000.0)
         self.rect_width.setValue(last_rect_width)
-        self.rect_width.setSuffix(" мм")
-        rect_layout.addRow("Ширина:", self.rect_width)
+        self.rect_width.setSuffix(" mm")
+        rect_layout.addRow("Width:", self.rect_width)
 
         self.rect_height = QtGui.QDoubleSpinBox()
         self.rect_height.setRange(1.0, 2000.0)
         self.rect_height.setValue(last_rect_height)
-        self.rect_height.setSuffix(" мм")
-        rect_layout.addRow("Высота:", self.rect_height)
+        self.rect_height.setSuffix(" mm")
+        rect_layout.addRow("Height:", self.rect_height)
 
         self.rect_wall = QtGui.QDoubleSpinBox()
         self.rect_wall.setRange(0.1, 100.0)
         self.rect_wall.setValue(last_rect_wall)
-        self.rect_wall.setSuffix(" мм")
-        rect_layout.addRow("Толщина стенки:", self.rect_wall)
+        self.rect_wall.setSuffix(" mm")
+        rect_layout.addRow("Wall thickness:", self.rect_wall)
 
         layout.addWidget(self.rect_group)
 
@@ -261,7 +261,7 @@ def create_pipe_by_trajectory():
     """Создаёт тело по траектории ParametricWire."""
     doc = App.ActiveDocument
     if not doc:
-        App.Console.PrintError("Нет активного документа.\n")
+        App.Console.PrintError("No active document.\n")
         return
 
     # Ищем все ParametricWire
@@ -270,7 +270,7 @@ def create_pipe_by_trajectory():
              and hasattr(obj, "Spreadsheet")]
 
     if not wires:
-        App.Console.PrintError("В документе нет объектов ParametricWire.\n")
+        App.Console.PrintError("No ParametricWire objects in document.\n")
         return
 
     if len(wires) == 1:
@@ -278,7 +278,7 @@ def create_pipe_by_trajectory():
     else:
         labels = [f"{w.Label} ({w.Name})" for w in wires]
         selected, ok = QtGui.QInputDialog.getItem(
-            None, "Выбор траектории", "Выберите ParametricWire:",
+            None, "Select trajectory", "Select ParametricWire:",
             labels, 0, False
         )
         if not ok:
@@ -292,7 +292,7 @@ def create_pipe_by_trajectory():
     profile_type, params = dlg.get_result()
 
     if not wire_obj.Shape or not wire_obj.Shape.Edges:
-        App.Console.PrintError("У ParametricWire нет геометрии.\n")
+        App.Console.PrintError("ParametricWire has no geometry.\n")
         return
 
     # === Имя Body ===
@@ -366,7 +366,7 @@ def create_pipe_by_trajectory():
     pipe.Transition = 1
     doc.recompute()
 
-    App.Console.PrintMessage(f"Создано тело: {body_name}\n")
+    App.Console.PrintMessage(f"Body created: {body_name}\n")
 
 
 def _add_rect(sketch, width, height, cx, cy):

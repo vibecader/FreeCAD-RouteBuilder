@@ -24,13 +24,13 @@ class AddVectorDialog(QtGui.QDialog):
         super().__init__(parent)
         self.panel = panel
         self.phantom = None
-        self.setWindowTitle("Добавить вектор")
+        self.setWindowTitle("Add Vector")
         self.setMinimumWidth(320)
 
         layout = QtGui.QVBoxLayout(self)
 
         axis_layout = QtGui.QHBoxLayout()
-        axis_layout.addWidget(QtGui.QLabel("Ось:"))
+        axis_layout.addWidget(QtGui.QLabel("Axis:"))
         self.axis_combo = QtGui.QComboBox()
         self.axis_combo.addItems(["+X", "-X", "+Y", "-Y", "+Z", "-Z"])
         self.axis_combo.currentIndexChanged.connect(self._update_phantom)
@@ -38,7 +38,7 @@ class AddVectorDialog(QtGui.QDialog):
         layout.addLayout(axis_layout)
 
         length_layout = QtGui.QHBoxLayout()
-        length_layout.addWidget(QtGui.QLabel("Длина (мм):"))
+        length_layout.addWidget(QtGui.QLabel("Length (mm):"))
         self.length_input = QtGui.QDoubleSpinBox()
         self.length_input.setRange(0.01, 1000000.0)
         self.length_input.setValue(1000.0)
@@ -127,7 +127,7 @@ class AddVectorDialog(QtGui.QDialog):
 
         if overlap:
             color = tuple(c * 0.3 for c in color)
-            self.overlap_label.setText("⚠ Наложение на существующий сегмент")
+            self.overlap_label.setText("⚠ Overlap on existing segment")
         else:
             self.overlap_label.setText("")
 
@@ -141,7 +141,7 @@ class AddVectorDialog(QtGui.QDialog):
         overlap = self.panel._check_vector_overlap(axis, length)
 
         if overlap:
-            self.overlap_label.setText("⚠ Наложение на существующий сегмент")
+            self.overlap_label.setText("⚠ Overlap on existing segment")
         else:
             self.overlap_label.setText("")
 
@@ -166,9 +166,9 @@ class AddVectorDialog(QtGui.QDialog):
         if self.panel._check_vector_overlap(axis, length):
             QtGui.QMessageBox.warning(
                 self,
-                "Наложение",
-                f"Вектор {axis} {length} мм создаёт наложение.\n"
-                f"Измените ось или длину."
+                "Overlap",
+                f"Vector {axis} {length} mm creates an overlap.\n"
+                f"Change the axis or length."
             )
             return
 
@@ -196,7 +196,7 @@ class ParametricWireTaskPanel:
         self._selected_vertex_key = None
         self._overlap_cache = None
         self.form = QtGui.QWidget()
-        self.form.setWindowTitle("Parametric Wire")
+        self.form.setWindowTitle("Route Builder")
         self.layout = QtGui.QVBoxLayout(self.form)
 
         try:
@@ -214,9 +214,9 @@ class ParametricWireTaskPanel:
                 "SELECT App::Link SUBELEMENT Edge "
                 "SELECT App::Link SUBELEMENT Face"
             )
-            App.Console.PrintMessage("Фильтр выбора: вершины, рёбра, грани.\n")
+            App.Console.PrintMessage("Selection filter: vertices, edges, faces.\n")
         except Exception as e:
-            App.Console.PrintWarning(f"Не удалось активировать фильтр: {e}\n")
+            App.Console.PrintWarning(f"Failed to activate filter: {e}\n")
 
         self.tabs = QtGui.QTabWidget()
         self.layout.addWidget(self.tabs)
@@ -284,7 +284,7 @@ class ParametricWireTaskPanel:
     def _toggle_points(self):
         if not hasattr(self.obj, "ShowPoints"):
             App.Console.PrintWarning(
-                "Свойство ShowPoints отсутствует. Пересоздайте линию.\n"
+                "ShowPoints property missing. Recreate the wire.\n"
             )
             return
         self.obj.ShowPoints = not self.obj.ShowPoints
@@ -295,12 +295,12 @@ class ParametricWireTaskPanel:
         if not hasattr(self, "toggle_points_btn"):
             return
         if not hasattr(self.obj, "ShowPoints"):
-            self.toggle_points_btn.setText("Показать точки")
+            self.toggle_points_btn.setText("Show Points")
             return
         if self.obj.ShowPoints:
-            self.toggle_points_btn.setText("Скрыть точки")
+            self.toggle_points_btn.setText("Hide Points")
         else:
-            self.toggle_points_btn.setText("Показать точки")
+            self.toggle_points_btn.setText("Show Points")
 
     # ============================================================
     # Глобальная проверка наложения
@@ -434,16 +434,16 @@ class ParametricWireTaskPanel:
 
         return False
 
-    def _validate_no_overlap(self, action_name="действие"):
+    def _validate_no_overlap(self, action_name="action"):
         if self._check_all_overlaps():
             QtGui.QMessageBox.warning(
                 None,
-                "Наложение сегментов",
-                f"Обнаружено наложение сегментов.\n"
-                f"{action_name} отменено.\n\n"
-                f"Проверьте таблицу Vectors."
+                "Segment overlap",
+                f"Segment overlap detected.\n"
+                f"{action_name} cancelled.\n\n"
+                f"Check the Vectors table."
             )
-            App.Console.PrintWarning(f"Наложение при действии: {action_name}.\n")
+            App.Console.PrintWarning(f"Overlap on action: {action_name}.\n")
             return False
         return True
 
@@ -453,7 +453,7 @@ class ParametricWireTaskPanel:
         if overlap:
             if hasattr(self, "add_button"):
                 self.add_button.setEnabled(False)
-                self.add_button.setText("Наложение — исправьте трассу")
+                self.add_button.setText("Overlap - fix the route")
                 self.add_button.setStyleSheet("background-color: #ffcccc;")
             if hasattr(self, "add_vector_button"):
                 self.add_vector_button.setEnabled(False)
@@ -461,7 +461,7 @@ class ParametricWireTaskPanel:
         else:
             if hasattr(self, "add_button"):
                 self.add_button.setEnabled(True)
-                self.add_button.setText("Добавить сегмент")
+                self.add_button.setText("Add Segment")
                 self.add_button.setStyleSheet("")
             if hasattr(self, "add_vector_button"):
                 self.add_vector_button.setEnabled(True)
@@ -471,11 +471,11 @@ class ParametricWireTaskPanel:
         if not sub_name:
             return ""
         if sub_name.startswith("Vertex"):
-            return "точка"
+            return "point"
         if sub_name.startswith("Edge"):
-            return "середина ребра"
+            return "edge midpoint"
         if sub_name.startswith("Face"):
-            return "центр масс грани"
+            return "face center of mass"
         return ""
 
     def _force_recompute(self):
@@ -517,9 +517,9 @@ class ParametricWireTaskPanel:
             self._highlight_segment_row(row)
 
         if self._check_all_overlaps():
-            App.Console.PrintWarning("Обнаружено наложение сегментов в трассе!\n")
+            App.Console.PrintWarning("Segment overlap detected in route!\n")
 
-        App.Console.PrintMessage(f"Пересчёт выполнен. Обновлено тел: {count}\n")
+        App.Console.PrintMessage(f"Recompute done. Bodies updated: {count}\n")
 
     def _on_tab_changed(self, index):
         """Скрывает фантом при уходе с Builder. Готовит Vectors и Attachment."""
@@ -620,7 +620,7 @@ class ParametricWireTaskPanel:
         try:
             new_len = float(item.text())
         except ValueError:
-            App.Console.PrintWarning("Некорректное значение LEN.\n")
+            App.Console.PrintWarning("Invalid LEN value.\n")
             return
 
         dir_item = self.vectors_table.item(row, 0)
@@ -639,14 +639,14 @@ class ParametricWireTaskPanel:
 
         self._apply_vectors_to_points()
 
-        if not self._validate_no_overlap("Изменение LEN"):
+        if not self._validate_no_overlap("Change LEN"):
             sheet_v.set("B" + str(sheet_row), str(old_len))
             doc.recompute()
             self._apply_vectors_to_points()
             self._refresh_vectors_table()
             return
 
-        App.Console.PrintMessage(f"Применено новое значение LEN: {new_len}\n")
+        App.Console.PrintMessage(f"Applied new LEN value: {new_len}\n")
 
     def _on_vectors_selection_changed(self):
         selected = self.vectors_table.selectedItems()
@@ -778,7 +778,7 @@ class ParametricWireTaskPanel:
         sheet_p = self.obj.Spreadsheet
         sheet_v = doc.getObject("Spreadsheet_Vectors")
         if not sheet_p or not sheet_v:
-            App.Console.PrintError("Таблица не найдена.\n")
+            App.Console.PrintError("Table not found.\n")
             return
 
         try:
@@ -786,7 +786,7 @@ class ParametricWireTaskPanel:
             y0 = sheet_p.get("B1")
             z0 = sheet_p.get("C1")
         except ValueError:
-            App.Console.PrintError("Не удалось прочитать первую точку.\n")
+            App.Console.PrintError("Failed to read first point.\n")
             return
 
         if x0 is None or y0 is None or z0 is None:
@@ -940,7 +940,7 @@ class ParametricWireTaskPanel:
         self._refresh_vectors_table()
 
         App.Console.PrintMessage(
-            f"Добавлен вектор: {axis} {length} мм → точка ({new_point[0]:.2f}, {new_point[1]:.2f}, {new_point[2]:.2f})\n"
+            f"Vector added: {axis} {length} mm -> point ({new_point[0]:.2f}, {new_point[1]:.2f}, {new_point[2]:.2f})\n"
         )
 
     def _on_remove_last_vector(self):
@@ -949,7 +949,7 @@ class ParametricWireTaskPanel:
         sheet_v = doc.getObject("Spreadsheet_Vectors")
 
         if not sheet_v:
-            App.Console.PrintWarning("Таблица Vectors не найдена.\n")
+            App.Console.PrintWarning("Vectors table not found.\n")
             return
 
         last_row_v = 1
@@ -972,14 +972,14 @@ class ParametricWireTaskPanel:
             if sel_sheet_row != last_row_v:
                 QtGui.QMessageBox.warning(
                     None,
-                    "Удаление запрещено",
-                    "Удаление из середины не поддерживается.\n"
-                    "Выделите последнюю строку или снимите выделение."
+                    "Deletion forbidden",
+                    "Deletion from the middle is not supported.\n"
+                    "Select the last row or clear the selection."
                 )
                 return
 
         if last_row_v <= 1:
-            App.Console.PrintWarning("Нечего удалять: таблица Vectors пуста.\n")
+            App.Console.PrintWarning("Nothing to delete: Vectors table is empty.\n")
             return
 
         sheet_v.clear("A" + str(last_row_v))
@@ -1011,7 +1011,7 @@ class ParametricWireTaskPanel:
         self.refresh_points_table()
         self._refresh_vectors_table()
 
-        App.Console.PrintMessage(f"Удалён последний вектор (строка {last_row_v}).\n")
+        App.Console.PrintMessage(f"Last vector removed (row {last_row_v}).\n")
 
     def _update_marker_sizes(self):
         try:
@@ -1049,6 +1049,7 @@ class ParametricWireTaskPanel:
                 point_marker.ViewObject.PointSize = base_size * 0.9
             except Exception:
                 pass
+
     def _check_selection(self):
         try:
             selection = Gui.Selection.getSelectionEx()
@@ -1065,7 +1066,7 @@ class ParametricWireTaskPanel:
                 self._new_marker = None
                 self._selected_vertex_key = None
                 try:
-                    self.selected_vertex_label.setText("Выбрана вершина: —")
+                    self.selected_vertex_label.setText("Selected: —")
                     self.selected_vertex_label.setStyleSheet(
                         "color: #2980b9; font-weight: bold; font-size: 12px;"
                     )
@@ -1139,9 +1140,9 @@ class ParametricWireTaskPanel:
         try:
             type_label = self._sub_type_label(sub_name)
             if type_label:
-                text = f"Выбрано: {sel.Object.Label}.{sub_name} ({type_label})"
+                text = f"Selected: {sel.Object.Label}.{sub_name} ({type_label})"
             else:
-                text = f"Выбрано: {sel.Object.Label}.{sub_name}"
+                text = f"Selected: {sel.Object.Label}.{sub_name}"
             self.selected_vertex_label.setText(text)
             self.selected_vertex_label.setStyleSheet(
                 "color: #2980b9; font-weight: bold; font-size: 12px;"
@@ -1150,19 +1151,19 @@ class ParametricWireTaskPanel:
             pass
 
     def _build_builder_tab(self):
-        title = QtGui.QLabel("Добавление ортогонального сегмента")
+        title = QtGui.QLabel("Add orthogonal segment")
         title.setStyleSheet("font-weight: bold; font-size: 13px;")
         self.builder_layout.addWidget(title)
 
         axis_layout = QtGui.QHBoxLayout()
-        axis_layout.addWidget(QtGui.QLabel("Ось:"))
+        axis_layout.addWidget(QtGui.QLabel("Axis:"))
         self.axis_combo = QtGui.QComboBox()
         self.axis_combo.addItems(["+X", "-X", "+Y", "-Y", "+Z", "-Z"])
         axis_layout.addWidget(self.axis_combo)
         self.builder_layout.addLayout(axis_layout)
 
         length_layout = QtGui.QHBoxLayout()
-        length_layout.addWidget(QtGui.QLabel("Длина (мм):"))
+        length_layout.addWidget(QtGui.QLabel("Length (mm):"))
         self.length_input = QtGui.QDoubleSpinBox()
         self.length_input.setRange(0.01, 1000000.0)
         self.length_input.setValue(1000.0)
@@ -1170,31 +1171,31 @@ class ParametricWireTaskPanel:
         length_layout.addWidget(self.length_input)
         self.builder_layout.addLayout(length_layout)
 
-        self.info_label = QtGui.QLabel("Последняя точка: —")
+        self.info_label = QtGui.QLabel("Last point: —")
         self.info_label.setStyleSheet("color: #555; font-style: italic;")
         self.builder_layout.addWidget(self.info_label)
 
-        self.add_button = QtGui.QPushButton("Добавить сегмент")
+        self.add_button = QtGui.QPushButton("Add Segment")
         self.add_button.clicked.connect(self.add_segment)
         self.builder_layout.addWidget(self.add_button)
 
-        self.remove_button = QtGui.QPushButton("Удалить последний сегмент")
+        self.remove_button = QtGui.QPushButton("Remove Last Segment")
         self.remove_button.clicked.connect(self.remove_last_segment)
         self.builder_layout.addWidget(self.remove_button)
 
-        self.recompute_button = QtGui.QPushButton("Пересчитать всё")
+        self.recompute_button = QtGui.QPushButton("Recompute All")
         self.recompute_button.clicked.connect(self._force_recompute)
         self.builder_layout.addWidget(self.recompute_button)
 
-        self.toggle_points_btn = QtGui.QPushButton("Скрыть точки")
+        self.toggle_points_btn = QtGui.QPushButton("Hide Points")
         self.toggle_points_btn.clicked.connect(self._toggle_points)
         self.builder_layout.addWidget(self.toggle_points_btn)
 
         hint = QtGui.QLabel(
-            "Горячие клавиши:\n"
-            "  Ctrl+Enter — добавить сегмент\n"
-            "  Ctrl+Z — удалить последний сегмент\n"
-            "  Ctrl+1..6 — выбор оси"
+            "Hotkeys:\n"
+            "  Ctrl+Enter - add segment\n"
+            "  Ctrl+Z - remove last segment\n"
+            "  Ctrl+1..6 - select axis"
         )
         hint.setStyleSheet("color: #777; font-size: 10px;")
         self.builder_layout.addWidget(hint)
@@ -1205,13 +1206,13 @@ class ParametricWireTaskPanel:
         self.length_input.valueChanged.connect(self.update_phantom)
 
     def _build_points_tab(self):
-        title = QtGui.QLabel("Список точек траектории")
+        title = QtGui.QLabel("Trajectory Points")
         title.setStyleSheet("font-weight: bold; font-size: 13px;")
         self.points_layout.addWidget(title)
 
         self.points_table = QtGui.QTableWidget()
         self.points_table.setColumnCount(4)
-        self.points_table.setHorizontalHeaderLabels(["№", "X", "Y", "Z"])
+        self.points_table.setHorizontalHeaderLabels(["#", "X", "Y", "Z"])
         self.points_table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.points_table.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.points_table.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
@@ -1222,19 +1223,19 @@ class ParametricWireTaskPanel:
 
         btn_layout = QtGui.QHBoxLayout()
 
-        self.refresh_button = QtGui.QPushButton("Обновить")
+        self.refresh_button = QtGui.QPushButton("Refresh")
         self.refresh_button.clicked.connect(self.refresh_points_table)
         btn_layout.addWidget(self.refresh_button)
 
-        self.copy_button = QtGui.QPushButton("Скопировать всё")
+        self.copy_button = QtGui.QPushButton("Copy All")
         self.copy_button.clicked.connect(self.copy_all_points)
         btn_layout.addWidget(self.copy_button)
 
-        self.export_button = QtGui.QPushButton("Экспорт CSV")
+        self.export_button = QtGui.QPushButton("Export CSV")
         self.export_button.clicked.connect(self.export_to_csv)
         btn_layout.addWidget(self.export_button)
 
-        self.delete_button = QtGui.QPushButton("Удалить последнюю")
+        self.delete_button = QtGui.QPushButton("Delete Last")
         self.delete_button.clicked.connect(self.remove_last_segment)
         btn_layout.addWidget(self.delete_button)
 
@@ -1354,7 +1355,7 @@ class ParametricWireTaskPanel:
         text = "\n".join(lines)
         clipboard = QtGui.QApplication.clipboard()
         clipboard.setText(text)
-        App.Console.PrintMessage(f"Скопировано {len(lines) - 1} точек в буфер обмена.\n")
+        App.Console.PrintMessage(f"Copied {len(lines) - 1} points to clipboard.\n")
 
     def export_to_csv(self):
         sheet = self.obj.Spreadsheet
@@ -1362,7 +1363,7 @@ class ParametricWireTaskPanel:
             return
 
         file_path, _ = QtGui.QFileDialog.getSaveFileName(
-            None, "Сохранить CSV", "", "CSV Files (*.csv);;All Files (*)"
+            None, "Save CSV", "", "CSV Files (*.csv);;All Files (*)"
         )
         if not file_path:
             return
@@ -1385,12 +1386,12 @@ class ParametricWireTaskPanel:
                         break
                     f.write(f"{x:.4f};{y:.4f};{z:.4f}\n")
                     row += 1
-            App.Console.PrintMessage(f"Экспортировано в: {file_path}\n")
+            App.Console.PrintMessage(f"Exported to: {file_path}\n")
         except Exception as e:
-            App.Console.PrintError(f"Ошибка экспорта: {e}\n")
+            App.Console.PrintError(f"Export error: {e}\n")
 
     def _build_vectors_tab(self):
-        title = QtGui.QLabel("Список векторов траектории")
+        title = QtGui.QLabel("Trajectory Vectors")
         title.setStyleSheet("font-weight: bold; font-size: 13px;")
         self.vectors_layout.addWidget(title)
 
@@ -1411,11 +1412,11 @@ class ParametricWireTaskPanel:
 
         btn_layout1 = QtGui.QHBoxLayout()
 
-        self.refresh_vectors_button = QtGui.QPushButton("Обновить векторы")
+        self.refresh_vectors_button = QtGui.QPushButton("Refresh Vectors")
         self.refresh_vectors_button.clicked.connect(self._on_refresh_vectors)
         btn_layout1.addWidget(self.refresh_vectors_button)
 
-        self.apply_vectors_button = QtGui.QPushButton("Применить LEN")
+        self.apply_vectors_button = QtGui.QPushButton("Apply LEN")
         self.apply_vectors_button.clicked.connect(self._on_apply_vectors)
         btn_layout1.addWidget(self.apply_vectors_button)
 
@@ -1423,22 +1424,22 @@ class ParametricWireTaskPanel:
 
         btn_layout2 = QtGui.QHBoxLayout()
 
-        self.add_vector_button = QtGui.QPushButton("Добавить вектор")
+        self.add_vector_button = QtGui.QPushButton("Add Vector")
         self.add_vector_button.clicked.connect(self._on_add_vector)
         btn_layout2.addWidget(self.add_vector_button)
 
-        self.remove_vector_button = QtGui.QPushButton("Удалить последний вектор")
+        self.remove_vector_button = QtGui.QPushButton("Remove Last Vector")
         self.remove_vector_button.clicked.connect(self._on_remove_last_vector)
         btn_layout2.addWidget(self.remove_vector_button)
 
         self.vectors_layout.addLayout(btn_layout2)
 
         hint = QtGui.QLabel(
-            "Двойной клик по LEN — редактирование.\n"
-            "DIR — только для чтения.\n"
-            "«Добавить вектор» — в конец трассы.\n"
-            "«Удалить последний вектор» — только последний.\n"
-            "Наложение сегментов запрещено."
+            "Double-click on LEN to edit.\n"
+            "DIR - read-only.\n"
+            "'Add Vector' - adds to the end of the route.\n"
+            "'Remove Last Vector' - only the last one.\n"
+            "Segment overlap is forbidden."
         )
         hint.setStyleSheet("color: #777; font-size: 10px;")
         self.vectors_layout.addWidget(hint)
@@ -1446,22 +1447,22 @@ class ParametricWireTaskPanel:
     def _on_refresh_vectors(self):
         self._update_vectors_from_points()
         self._refresh_vectors_table()
-        App.Console.PrintMessage("Векторы обновлены из координат.\n")
+        App.Console.PrintMessage("Vectors refreshed from coordinates.\n")
 
     def _on_apply_vectors(self):
         self._apply_vectors_to_points()
-        App.Console.PrintMessage("Координаты пересчитаны из векторов.\n")
+        App.Console.PrintMessage("Coordinates recalculated from vectors.\n")
 
     def _build_attachment_tab(self):
-        title = QtGui.QLabel("Привязка к геометрии")
+        title = QtGui.QLabel("Attachment to Geometry")
         title.setStyleSheet("font-weight: bold; font-size: 13px;")
         self.attach_layout.addWidget(title)
 
-        self.attach_status = QtGui.QLabel("Не привязано (0, 0, 0)")
+        self.attach_status = QtGui.QLabel("Not attached (0, 0, 0)")
         self.attach_status.setStyleSheet("color: #c0392b; font-style: italic;")
         self.attach_layout.addWidget(self.attach_status)
 
-        self.selected_vertex_label = QtGui.QLabel("Выбрана вершина: —")
+        self.selected_vertex_label = QtGui.QLabel("Selected: —")
         self.selected_vertex_label.setStyleSheet(
             "color: #2980b9; font-weight: bold; font-size: 12px;"
         )
@@ -1476,26 +1477,26 @@ class ParametricWireTaskPanel:
         coord_layout.addRow("Z:", self.attach_z)
         self.attach_layout.addLayout(coord_layout)
 
-        self.pick_button = QtGui.QPushButton("Сменить привязку")
+        self.pick_button = QtGui.QPushButton("Change Attachment")
         self.pick_button.clicked.connect(self.pick_attachment)
         self.attach_layout.addWidget(self.pick_button)
 
-        self.reset_attach_button = QtGui.QPushButton("Сбросить привязку")
+        self.reset_attach_button = QtGui.QPushButton("Reset Attachment")
         self.reset_attach_button.clicked.connect(self.reset_attachment)
         self.attach_layout.addWidget(self.reset_attach_button)
 
         hint = QtGui.QLabel(
-            "Как привязать:\n"
-            "1. Выделите вершину, ребро или грань в 3D.\n"
-            "2. Нажмите «Сменить привязку».\n"
+            "How to attach:\n"
+            "1. Select a vertex, edge, or face in 3D.\n"
+            "2. Click 'Change Attachment'.\n"
             "\n"
-            "Позиция:\n"
-            "  Вершина — точка.\n"
-            "  Ребро — середина.\n"
-            "  Грань — центр масс.\n"
+            "Position:\n"
+            "  Vertex - point.\n"
+            "  Edge - midpoint.\n"
+            "  Face - center of mass.\n"
             "\n"
-            "Зелёная точка — текущая привязка.\n"
-            "Синяя точка — предварительный выбор."
+            "Green marker - current attachment.\n"
+            "Blue marker - preliminary selection."
         )
         hint.setStyleSheet("color: #777; font-size: 10px;")
         self.attach_layout.addWidget(hint)
@@ -1528,9 +1529,9 @@ class ParametricWireTaskPanel:
 
     def refresh_attachment_info(self):
         if not self.obj.AttachmentSupport:
-            self.attach_status.setText("Не привязано (0, 0, 0)")
+            self.attach_status.setText("Not attached (0, 0, 0)")
             self.attach_status.setStyleSheet("color: #c0392b; font-style: italic;")
-            self.selected_vertex_label.setText("Выбрана вершина: —")
+            self.selected_vertex_label.setText("Selected: —")
             self.selected_vertex_label.setStyleSheet(
                 "color: #2980b9; font-weight: bold; font-size: 12px;"
             )
@@ -1543,9 +1544,9 @@ class ParametricWireTaskPanel:
         try:
             support_obj, sub_elements = self.obj.AttachmentSupport
             if not support_obj:
-                self.attach_status.setText("Привязка потеряна")
+                self.attach_status.setText("Attachment lost")
                 self.attach_status.setStyleSheet("color: #c0392b; font-weight: bold;")
-                self.selected_vertex_label.setText("Выбрана вершина: —")
+                self.selected_vertex_label.setText("Selected: —")
                 return
 
             sub_name = ""
@@ -1560,14 +1561,14 @@ class ParametricWireTaskPanel:
 
             type_label = self._sub_type_label(sub_label)
             if type_label:
-                text = f"Привязано к: {obj_label}.{sub_label} ({type_label})"
+                text = f"Attached to: {obj_label}.{sub_label} ({type_label})"
             else:
-                text = f"Привязано к: {obj_label}.{sub_label}"
+                text = f"Attached to: {obj_label}.{sub_label}"
             self.attach_status.setText(text)
             self.attach_status.setStyleSheet("color: #27ae60; font-weight: bold;")
 
             self.selected_vertex_label.setText(
-                f"Выбрано: {obj_label}.{sub_label}"
+                f"Selected: {obj_label}.{sub_label}"
             )
             self.selected_vertex_label.setStyleSheet(
                 "color: #2980b9; font-weight: bold; font-size: 12px;"
@@ -1579,7 +1580,7 @@ class ParametricWireTaskPanel:
             self.attach_z.setText(f"{pos.z:.2f}")
 
         except Exception as e:
-            self.attach_status.setText(f"Ошибка: {e}")
+            self.attach_status.setText(f"Error: {e}")
             self.attach_status.setStyleSheet("color: #c0392b; font-weight: bold;")
 
         self._update_attach_marker()
@@ -1588,8 +1589,8 @@ class ParametricWireTaskPanel:
         selection = Gui.Selection.getSelectionEx()
 
         if not selection:
-            App.Console.PrintWarning("Ничего не выбрано. Выделите в 3D.\n")
-            self.attach_status.setText("Ничего не выбрано")
+            App.Console.PrintWarning("Nothing selected. Select in 3D.\n")
+            self.attach_status.setText("Nothing selected")
             self.attach_status.setStyleSheet("color: #c0392b; font-weight: bold;")
             return
 
@@ -1597,8 +1598,8 @@ class ParametricWireTaskPanel:
         sub_names = sel.SubElementNames
 
         if not sub_names:
-            App.Console.PrintWarning("Выбран объект целиком. Выберите субэлемент.\n")
-            self.attach_status.setText("Выберите вершину, ребро или грань")
+            App.Console.PrintWarning("Whole object selected. Select a sub-element.\n")
+            self.attach_status.setText("Select a vertex, edge, or face")
             self.attach_status.setStyleSheet("color: #c0392b; font-weight: bold;")
             return
 
@@ -1612,9 +1613,9 @@ class ParametricWireTaskPanel:
 
         if not target_name:
             App.Console.PrintWarning(
-                f"Выбран элемент '{sub_names[0]}'. Выберите вершину, ребро или грань.\n"
+                f"Selected element '{sub_names[0]}'. Select a vertex, edge, or face.\n"
             )
-            self.attach_status.setText(f"Неизвестный тип: {sub_names[0]}")
+            self.attach_status.setText(f"Unknown type: {sub_names[0]}")
             self.attach_status.setStyleSheet("color: #c0392b; font-weight: bold;")
             return
 
@@ -1622,13 +1623,13 @@ class ParametricWireTaskPanel:
         App.ActiveDocument.recompute()
 
         self.refresh_attachment_info()
-        App.Console.PrintMessage(f"Привязано к: {sel.Object.Label}.{target_name}\n")
+        App.Console.PrintMessage(f"Attached to: {sel.Object.Label}.{target_name}\n")
 
     def reset_attachment(self):
         self.obj.AttachmentSupport = None
         App.ActiveDocument.recompute()
         self.refresh_attachment_info()
-        App.Console.PrintMessage("Привязка сброшена (0, 0, 0).\n")
+        App.Console.PrintMessage("Attachment reset (0, 0, 0).\n")
 
     def create_phantom(self):
         if self.phantom:
@@ -1685,15 +1686,15 @@ class ParametricWireTaskPanel:
 
         if target_exists:
             self.add_button.setEnabled(False)
-            self.add_button.setText("Точка уже существует")
+            self.add_button.setText("Point already exists")
             self.add_button.setStyleSheet("background-color: #ffcccc;")
         elif overlap:
             self.add_button.setEnabled(False)
-            self.add_button.setText("Наложение — исправьте")
+            self.add_button.setText("Overlap - fix")
             self.add_button.setStyleSheet("background-color: #ffcccc;")
         else:
             self.add_button.setEnabled(True)
-            self.add_button.setText("Добавить сегмент")
+            self.add_button.setText("Add Segment")
             self.add_button.setStyleSheet("")
 
         App.ActiveDocument.recompute()
@@ -1709,10 +1710,10 @@ class ParametricWireTaskPanel:
         last_point = self.get_last_point()
         if last_point:
             self.info_label.setText(
-                f"Последняя точка: X={last_point[0]:.2f}, Y={last_point[1]:.2f}, Z={last_point[2]:.2f}"
+                f"Last point: X={last_point[0]:.2f}, Y={last_point[1]:.2f}, Z={last_point[2]:.2f}"
             )
         else:
-            self.info_label.setText("Последняя точка: — (таблица пуста)")
+            self.info_label.setText("Last point: — (table empty)")
 
     def get_last_point(self):
         sheet = self.obj.Spreadsheet
@@ -1759,7 +1760,7 @@ class ParametricWireTaskPanel:
     def add_segment(self):
         sheet = self.obj.Spreadsheet
         if not sheet:
-            App.Console.PrintError("Таблица не привязана к объекту.\n")
+            App.Console.PrintError("Table not linked to object.\n")
             return
 
         last_point = self.get_last_point()
@@ -1787,17 +1788,17 @@ class ParametricWireTaskPanel:
 
         if self.point_exists(new_point):
             App.Console.PrintWarning(
-                f"Точка ({new_point[0]:.2f}, {new_point[1]:.2f}, {new_point[2]:.2f}) уже существует. "
-                f"Сегмент не добавлен.\n"
+                f"Point ({new_point[0]:.2f}, {new_point[1]:.2f}, {new_point[2]:.2f}) already exists. "
+                f"Segment not added.\n"
             )
             return
 
         if self._check_vector_overlap(axis, length):
             QtGui.QMessageBox.warning(
                 None,
-                "Наложение",
-                f"Вектор {axis} {length} мм создаёт наложение.\n"
-                f"Сегмент не добавлен."
+                "Overlap",
+                f"Vector {axis} {length} mm creates an overlap.\n"
+                f"Segment not added."
             )
             return
 
@@ -1828,7 +1829,7 @@ class ParametricWireTaskPanel:
             self._refresh_vectors_table()
 
         App.Console.PrintMessage(
-            f"Добавлен сегмент: {axis} {length} мм → точка ({new_point[0]:.2f}, {new_point[1]:.2f}, {new_point[2]:.2f})\n"
+            f"Segment added: {axis} {length} mm -> point ({new_point[0]:.2f}, {new_point[1]:.2f}, {new_point[2]:.2f})\n"
         )
 
     def remove_last_segment(self):
@@ -1850,7 +1851,7 @@ class ParametricWireTaskPanel:
                 break
 
         if last_row <= 1:
-            App.Console.PrintWarning("Нечего удалять: в таблице только начальная точка.\n")
+            App.Console.PrintWarning("Nothing to delete: table has only the start point.\n")
             return
 
         sheet.clear("A" + str(last_row))
@@ -1870,7 +1871,7 @@ class ParametricWireTaskPanel:
         if sheet_v:
             self._refresh_vectors_table()
 
-        App.Console.PrintMessage(f"Удалён последний сегмент (строка {last_row}).\n")
+        App.Console.PrintMessage(f"Last segment removed (row {last_row}).\n")
 
     def getStandardButtons(self):
         return QtGui.QDialogButtonBox.Close
@@ -1898,12 +1899,12 @@ class ParametricWireTaskPanel:
 
         if self._check_all_overlaps():
             App.Console.PrintWarning(
-                "При закрытии панели обнаружено наложение сегментов!\n"
+                "Segment overlap detected on panel close!\n"
             )
 
         try:
             Gui.Selection.removeSelectionGate()
-            App.Console.PrintMessage("Фильтр выбора снят.\n")
+            App.Console.PrintMessage("Selection filter removed.\n")
         except Exception:
             pass
         for sc in self.shortcuts:
