@@ -89,11 +89,6 @@
             background-color: #ecf0f1;
             color: #3498db;
         }
-        nav.sidebar a.sub {
-            padding-left: 22px;
-            font-size: 13px;
-            color: #7f8c8d;
-        }
         main {
             flex-grow: 1;
             min-width: 0;
@@ -211,12 +206,18 @@
             color: #3498db;
             text-decoration: none;
         }
-        .en, .ru {
+
+        /* === Языки: по умолчанию EN === */
+        .ru {
             display: none;
         }
-        .en.active, .ru.active {
+        body.lang-ru .ru {
             display: block;
         }
+        body.lang-ru .en {
+            display: none;
+        }
+
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
@@ -233,7 +234,7 @@
 
 <header>
     <h1>Route Builder</h1>
-    <p class="en active">3D orthogonal route builder for FreeCAD — User Manual</p>
+    <p class="en">3D orthogonal route builder for FreeCAD — User Manual</p>
     <p class="ru">Построитель ортогональных 3D-трасс для FreeCAD — Руководство пользователя</p>
     <div class="lang-switch">
         <button id="btn-en" class="active" onclick="setLang('en')">English</button>
@@ -243,42 +244,46 @@
 
 <div class="container">
     <nav class="sidebar">
-        <h3 class="en active">Contents</h3>
-        <h3 class="ru">Содержание</h3>
-        <a href="#intro" class="en active">Introduction</a>
-        <a href="#intro" class="ru">Введение</a>
-        <a href="#install" class="en active">Installation</a>
-        <a href="#install" class="ru">Установка</a>
-        <a href="#quickstart" class="en active">Quick Start</a>
-        <a href="#quickstart" class="ru">Быстрый старт</a>
-        <a href="#builder" class="en active">Builder tab</a>
-        <a href="#builder" class="ru">Вкладка Builder</a>
-        <a href="#points" class="en active">Points tab</a>
-        <a href="#points" class="ru">Вкладка Points</a>
-        <a href="#vectors" class="en active">Vectors tab</a>
-        <a href="#vectors" class="ru">Вкладка Vectors</a>
-        <a href="#attachment" class="en active">Attachment tab</a>
-        <a href="#attachment" class="ru">Вкладка Attachment</a>
-        <a href="#body" class="en active">Create Body</a>
-        <a href="#body" class="ru">Создание тела</a>
-        <a href="#step" class="en active">STEP Export</a>
-        <a href="#step" class="ru">Экспорт в STEP</a>
-        <a href="#hotkeys" class="en active">Hotkeys</a>
-        <a href="#hotkeys" class="ru">Горячие клавиши</a>
-        <a href="#tips" class="en active">Tips & Troubleshooting</a>
-        <a href="#tips" class="ru">Советы и решения</a>
-        <a href="#license" class="en active">License</a>
-        <a href="#license" class="ru">Лицензия</a>
+        <div class="en">
+            <h3>Contents</h3>
+            <a href="#intro">Introduction</a>
+            <a href="#install">Installation</a>
+            <a href="#quickstart">Quick Start</a>
+            <a href="#builder">Builder tab</a>
+            <a href="#points">Points tab</a>
+            <a href="#vectors">Vectors tab</a>
+            <a href="#attachment">Attachment tab</a>
+            <a href="#body">Create Body</a>
+            <a href="#step">STEP Export</a>
+            <a href="#hotkeys">Hotkeys</a>
+            <a href="#tips">Tips & Troubleshooting</a>
+            <a href="#license">License</a>
+        </div>
+        <div class="ru">
+            <h3>Содержание</h3>
+            <a href="#intro">Введение</a>
+            <a href="#install">Установка</a>
+            <a href="#quickstart">Быстрый старт</a>
+            <a href="#builder">Вкладка Builder</a>
+            <a href="#points">Вкладка Points</a>
+            <a href="#vectors">Вкладка Vectors</a>
+            <a href="#attachment">Вкладка Attachment</a>
+            <a href="#body">Создание тела</a>
+            <a href="#step">Экспорт в STEP</a>
+            <a href="#hotkeys">Горячие клавиши</a>
+            <a href="#tips">Советы и решения</a>
+            <a href="#license">Лицензия</a>
+        </div>
     </nav>
 
     <main>
 
-        <!-- ============ INTRODUCTION ============ -->
+        <!-- INTRODUCTION -->
         <section id="intro">
-            <h2 class="en active">Introduction</h2>
+            <h2 class="en">Introduction</h2>
             <h2 class="ru">Введение</h2>
 
-            <div class="en active">
+            <div class="en">
                 <p><strong>Route Builder</strong> is a FreeCAD workbench for building parametric 3D routes (pipes, cables, ducts) with automatic generation of solid bodies.</p>
                 <p>It is designed for engineers who need to create orthogonal routing systems quickly and precisely. The route is defined by coordinates in a Spreadsheet, and the body (pipe, box, or rectangle) is generated automatically along the trajectory.</p>
             </div>
@@ -289,12 +294,12 @@
             </div>
         </section>
 
-        <!-- ============ INSTALLATION ============ -->
+        <!-- INSTALLATION -->
         <section id="install">
-            <h2 class="en active">Installation</h2>
+            <h2 class="en">Installation</h2>
             <h2 class="ru">Установка</h2>
 
-            <div class="en active">
+            <div class="en">
                 <p>Clone this repository into your FreeCAD <code>Mod</code> directory:</p>
                 <p><strong>Linux:</strong></p>
                 <pre><code>cd ~/.local/share/FreeCAD/Mod/
@@ -323,12 +328,12 @@ git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
             </div>
         </section>
 
-        <!-- ============ QUICK START ============ -->
+        <!-- QUICK START -->
         <section id="quickstart">
-            <h2 class="en active">Quick Start</h2>
+            <h2 class="en">Quick Start</h2>
             <h2 class="ru">Быстрый старт</h2>
 
-            <div class="en active">
+            <div class="en">
                 <ol>
                     <li>Create a <strong>Spreadsheet</strong> and fill columns A, B, C with X, Y, Z coordinates.</li>
                     <li>Switch to the <strong>Route Builder</strong> workbench.</li>
@@ -353,12 +358,12 @@ git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
             </div>
         </section>
 
-        <!-- ============ BUILDER ============ -->
+        <!-- BUILDER -->
         <section id="builder">
-            <h2 class="en active">Builder tab</h2>
+            <h2 class="en">Builder tab</h2>
             <h2 class="ru">Вкладка Builder</h2>
 
-            <div class="en active">
+            <div class="en">
                 <p>The Builder tab is used to add orthogonal segments to the route. Choose an axis (+X, -X, +Y, -Y, +Z, -Z) and a length, then click <strong>Add Segment</strong>.</p>
                 <p>A color-coded phantom shows the projected segment: red for X, green for Y, blue for Z.</p>
                 <img src="img/02-builder.png" alt="Builder tab">
@@ -377,12 +382,12 @@ git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
             </div>
         </section>
 
-        <!-- ============ POINTS ============ -->
+        <!-- POINTS -->
         <section id="points">
-            <h2 class="en active">Points tab</h2>
+            <h2 class="en">Points tab</h2>
             <h2 class="ru">Вкладка Points</h2>
 
-            <div class="en active">
+            <div class="en">
                 <p>The Points tab shows all trajectory points with their X, Y, Z coordinates. Double-click a row to highlight the point in the 3D view.</p>
                 <img src="img/08-points.png" alt="Points tab">
                 <p>Buttons:</p>
@@ -407,12 +412,12 @@ git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
             </div>
         </section>
 
-        <!-- ============ VECTORS ============ -->
+        <!-- VECTORS -->
         <section id="vectors">
-            <h2 class="en active">Vectors tab</h2>
+            <h2 class="en">Vectors tab</h2>
             <h2 class="ru">Вкладка Vectors</h2>
 
-            <div class="en active">
+            <div class="en">
                 <p>The Vectors tab shows the route as a list of segments: direction (<code>DIR</code>) and length (<code>LEN</code>).</p>
                 <p><strong>Double-click on a LEN cell</strong> to edit the segment length. The coordinates of all subsequent points recalculate automatically.</p>
                 <img src="img/03-vectors.png" alt="Vectors tab">
@@ -431,12 +436,12 @@ git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
             </div>
         </section>
 
-        <!-- ============ ATTACHMENT ============ -->
+        <!-- ATTACHMENT -->
         <section id="attachment">
-            <h2 class="en active">Attachment tab</h2>
+            <h2 class="en">Attachment tab</h2>
             <h2 class="ru">Вкладка Attachment</h2>
 
-            <div class="en active">
+            <div class="en">
                 <p>The Attachment tab allows you to attach the route to an existing geometry: vertex, edge, or face.</p>
                 <ol>
                     <li>Select a vertex, edge, or face in 3D.</li>
@@ -465,12 +470,12 @@ git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
             </div>
         </section>
 
-        <!-- ============ BODY ============ -->
+        <!-- BODY -->
         <section id="body">
-            <h2 class="en active">Create Body by Trajectory</h2>
+            <h2 class="en">Create Body by Trajectory</h2>
             <h2 class="ru">Создание тела по траектории</h2>
 
-            <div class="en active">
+            <div class="en">
                 <p>Click <strong>Create Body by Trajectory</strong> to generate a solid body along the route. Choose a profile type:</p>
                 <ul>
                     <li><strong>Circle (pipe)</strong> — standard DN diameters from DN15 to DN500, with wall thickness.</li>
@@ -503,12 +508,12 @@ git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
             </div>
         </section>
 
-        <!-- ============ STEP ============ -->
+        <!-- STEP -->
         <section id="step">
-            <h2 class="en active">STEP Export</h2>
+            <h2 class="en">STEP Export</h2>
             <h2 class="ru">Экспорт в STEP</h2>
 
-            <div class="en active">
+            <div class="en">
                 <p>Click <strong>Export to STEP</strong> to export bodies to a STEP file. If the document contains multiple bodies, a selection dialog appears.</p>
                 <img src="img/09-step-export.png" alt="STEP export">
             </div>
@@ -519,16 +524,16 @@ git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
             </div>
         </section>
 
-        <!-- ============ HOTKEYS ============ -->
+        <!-- HOTKEYS -->
         <section id="hotkeys">
-            <h2 class="en active">Hotkeys</h2>
+            <h2 class="en">Hotkeys</h2>
             <h2 class="ru">Горячие клавиши</h2>
 
             <table>
                 <thead>
                     <tr>
-                        <th class="en active">Keys</th>
-                        <th class="en active">Action</th>
+                        <th class="en">Keys</th>
+                        <th class="en">Action</th>
                         <th class="ru">Клавиши</th>
                         <th class="ru">Действие</th>
                     </tr>
@@ -536,54 +541,54 @@ git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
                 <tbody>
                     <tr>
                         <td><code>Ctrl+Enter</code></td>
-                        <td class="en active">Add segment</td>
+                        <td class="en">Add segment</td>
                         <td class="ru">Добавить сегмент</td>
                     </tr>
                     <tr>
                         <td><code>Ctrl+Z</code></td>
-                        <td class="en active">Remove last segment</td>
+                        <td class="en">Remove last segment</td>
                         <td class="ru">Удалить последний сегмент</td>
                     </tr>
                     <tr>
                         <td><code>Ctrl+1</code></td>
-                        <td class="en active">Select axis +X</td>
+                        <td class="en">Select axis +X</td>
                         <td class="ru">Выбрать ось +X</td>
                     </tr>
                     <tr>
                         <td><code>Ctrl+2</code></td>
-                        <td class="en active">Select axis -X</td>
+                        <td class="en">Select axis -X</td>
                         <td class="ru">Выбрать ось -X</td>
                     </tr>
                     <tr>
                         <td><code>Ctrl+3</code></td>
-                        <td class="en active">Select axis +Y</td>
+                        <td class="en">Select axis +Y</td>
                         <td class="ru">Выбрать ось +Y</td>
                     </tr>
                     <tr>
                         <td><code>Ctrl+4</code></td>
-                        <td class="en active">Select axis -Y</td>
+                        <td class="en">Select axis -Y</td>
                         <td class="ru">Выбрать ось -Y</td>
                     </tr>
                     <tr>
                         <td><code>Ctrl+5</code></td>
-                        <td class="en active">Select axis +Z</td>
+                        <td class="en">Select axis +Z</td>
                         <td class="ru">Выбрать ось +Z</td>
                     </tr>
                     <tr>
                         <td><code>Ctrl+6</code></td>
-                        <td class="en active">Select axis -Z</td>
+                        <td class="en">Select axis -Z</td>
                         <td class="ru">Выбрать ось -Z</td>
                     </tr>
                 </tbody>
             </table>
         </section>
 
-        <!-- ============ TIPS ============ -->
+        <!-- TIPS -->
         <section id="tips">
-            <h2 class="en active">Tips & Troubleshooting</h2>
+            <h2 class="en">Tips & Troubleshooting</h2>
             <h2 class="ru">Советы и решения</h2>
 
-            <div class="en active">
+            <div class="en">
                 <h3>Tips</h3>
                 <ul>
                     <li>Use <strong>Fillet Radius</strong> in route properties to smooth corners.</li>
@@ -622,12 +627,12 @@ git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
             </div>
         </section>
 
-        <!-- ============ LICENSE ============ -->
+        <!-- LICENSE -->
         <section id="license">
-            <h2 class="en active">License</h2>
+            <h2 class="en">License</h2>
             <h2 class="ru">Лицензия</h2>
 
-            <div class="en active">
+            <div class="en">
                 <ul>
                     <li>Code: <strong>LGPL-2.1-or-later</strong></li>
                     <li>Assets (icons): <strong>CC-BY-SA-4.0</strong></li>
@@ -654,16 +659,19 @@ git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
 
 <script>
     function setLang(lang) {
-        document.querySelectorAll('.en').forEach(el => {
-            el.classList.toggle('active', lang === 'en');
-        });
-        document.querySelectorAll('.ru').forEach(el => {
-            el.classList.toggle('active', lang === 'ru');
-        });
+        if (lang === 'ru') {
+            document.body.classList.add('lang-ru');
+        } else {
+            document.body.classList.remove('lang-ru');
+        }
+        document.documentElement.lang = lang;
         document.getElementById('btn-en').classList.toggle('active', lang === 'en');
         document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
-        document.documentElement.lang = lang;
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        setLang('en');
+    });
 </script>
 
 </body>
