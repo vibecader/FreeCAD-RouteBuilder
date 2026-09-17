@@ -86,7 +86,7 @@ Restart FreeCAD. Switch to the **Route Builder** workbench.
 
 ## Documentation
 
-Full user manual (English + Russian): [docs/manual.html](docs/manual.html)
+Full user manual (English + Russian): [docs/manual.html](docs/index.html)
 
 ## Hotkeys
 
