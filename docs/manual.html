@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Builder — User Manual</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background-color: #f5f6fa;
+        }
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .lang-switch {
+            margin-top: 15px;
+        }
+        .lang-switch button {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 8px 20px;
+            margin-right: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .lang-switch button:hover,
+        .lang-switch button.active {
+            background-color: white;
+            color: #2c3e50;
+        }
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 40px;
+            gap: 30px;
+        }
+        nav.sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 20px;
+            align-self: flex-start;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        nav.sidebar h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        nav.sidebar a {
+            display: block;
+            color: #2c3e50;
+            text-decoration: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        nav.sidebar a:hover {
+            background-color: #ecf0f1;
+            color: #3498db;
+        }
+        nav.sidebar a.sub {
+            padding-left: 22px;
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+        main {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        section {
+            background: white;
+            border-radius: 8px;
+            padding: 30px 35px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        section h2 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        section h3 {
+            color: #2980b9;
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        section p {
+            margin-bottom: 12px;
+        }
+        section ul, section ol {
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+        section li {
+            margin-bottom: 6px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        code {
+            background-color: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.92em;
+            color: #c0392b;
+        }
+        pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+        pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 14px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px 18px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .tip {
+            background-color: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 12px 18px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .warning {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 12px 18px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .en, .ru {
+            display: none;
+        }
+        .en.active, .ru.active {
+            display: block;
+        }
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+                padding: 20px;
+            }
+            nav.sidebar {
+                width: 100%;
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Route Builder</h1>
+    <p class="en active">3D orthogonal route builder for FreeCAD — User Manual</p>
+    <p class="ru">Построитель ортогональных 3D-трасс для FreeCAD — Руководство пользователя</p>
+    <div class="lang-switch">
+        <button id="btn-en" class="active" onclick="setLang('en')">English</button>
+        <button id="btn-ru" onclick="setLang('ru')">Русский</button>
+    </div>
+</header>
+
+<div class="container">
+    <nav class="sidebar">
+        <h3 class="en active">Contents</h3>
+        <h3 class="ru">Содержание</h3>
+        <a href="#intro" class="en active">Introduction</a>
+        <a href="#intro" class="ru">Введение</a>
+        <a href="#install" class="en active">Installation</a>
+        <a href="#install" class="ru">Установка</a>
+        <a href="#quickstart" class="en active">Quick Start</a>
+        <a href="#quickstart" class="ru">Быстрый старт</a>
+        <a href="#builder" class="en active">Builder tab</a>
+        <a href="#builder" class="ru">Вкладка Builder</a>
+        <a href="#points" class="en active">Points tab</a>
+        <a href="#points" class="ru">Вкладка Points</a>
+        <a href="#vectors" class="en active">Vectors tab</a>
+        <a href="#vectors" class="ru">Вкладка Vectors</a>
+        <a href="#attachment" class="en active">Attachment tab</a>
+        <a href="#attachment" class="ru">Вкладка Attachment</a>
+        <a href="#body" class="en active">Create Body</a>
+        <a href="#body" class="ru">Создание тела</a>
+        <a href="#step" class="en active">STEP Export</a>
+        <a href="#step" class="ru">Экспорт в STEP</a>
+        <a href="#hotkeys" class="en active">Hotkeys</a>
+        <a href="#hotkeys" class="ru">Горячие клавиши</a>
+        <a href="#tips" class="en active">Tips & Troubleshooting</a>
+        <a href="#tips" class="ru">Советы и решения</a>
+        <a href="#license" class="en active">License</a>
+        <a href="#license" class="ru">Лицензия</a>
+    </nav>
+
+    <main>
+
+        <!-- ============ INTRODUCTION ============ -->
+        <section id="intro">
+            <h2 class="en active">Introduction</h2>
+            <h2 class="ru">Введение</h2>
+
+            <div class="en active">
+                <p><strong>Route Builder</strong> is a FreeCAD workbench for building parametric 3D routes (pipes, cables, ducts) with automatic generation of solid bodies.</p>
+                <p>It is designed for engineers who need to create orthogonal routing systems quickly and precisely. The route is defined by coordinates in a Spreadsheet, and the body (pipe, box, or rectangle) is generated automatically along the trajectory.</p>
+            </div>
+
+            <div class="ru">
+                <p><strong>Route Builder</strong> — это верстак FreeCAD для построения параметрических 3D-трасс (трубопроводы, кабельные лотки, воздуховоды) с автоматической генерацией тел.</p>
+                <p>Инструмент создан для инженеров, которым нужно быстро и точно проектировать ортогональные трассы. Трасса задаётся координатами в таблице Spreadsheet, а тело (труба, короб или прямоугольник) генерируется автоматически вдоль траектории.</p>
+            </div>
+        </section>
+
+        <!-- ============ INSTALLATION ============ -->
+        <section id="install">
+            <h2 class="en active">Installation</h2>
+            <h2 class="ru">Установка</h2>
+
+            <div class="en active">
+                <p>Clone this repository into your FreeCAD <code>Mod</code> directory:</p>
+                <p><strong>Linux:</strong></p>
+                <pre><code>cd ~/.local/share/FreeCAD/Mod/
+git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
+                <p><strong>Windows:</strong></p>
+                <pre><code>cd %APPDATA%/FreeCAD/Mod/
+git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
+                <p><strong>macOS:</strong></p>
+                <pre><code>cd ~/Library/Application\ Support/FreeCAD/Mod/
+git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
+                <p>Restart FreeCAD. Switch to the <strong>Route Builder</strong> workbench.</p>
+            </div>
+
+            <div class="ru">
+                <p>Склонируйте репозиторий в папку <code>Mod</code> FreeCAD:</p>
+                <p><strong>Linux:</strong></p>
+                <pre><code>cd ~/.local/share/FreeCAD/Mod/
+git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
+                <p><strong>Windows:</strong></p>
+                <pre><code>cd %APPDATA%/FreeCAD/Mod/
+git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
+                <p><strong>macOS:</strong></p>
+                <pre><code>cd ~/Library/Application\ Support/FreeCAD/Mod/
+git clone https://github.com/vibecader/FreeCAD-RouteBuilder.git</code></pre>
+                <p>Перезапустите FreeCAD. Выберите верстак <strong>Route Builder</strong>.</p>
+            </div>
+        </section>
+
+        <!-- ============ QUICK START ============ -->
+        <section id="quickstart">
+            <h2 class="en active">Quick Start</h2>
+            <h2 class="ru">Быстрый старт</h2>
+
+            <div class="en active">
+                <ol>
+                    <li>Create a <strong>Spreadsheet</strong> and fill columns A, B, C with X, Y, Z coordinates.</li>
+                    <li>Switch to the <strong>Route Builder</strong> workbench.</li>
+                    <li>Click <strong>Create Route</strong> → select the spreadsheet.</li>
+                    <li>In the <strong>Builder</strong> tab, choose axis and length, then click <strong>Add Segment</strong> (or press <code>Ctrl+Enter</code>).</li>
+                    <li>Switch to the <strong>Vectors</strong> tab to edit segment lengths if needed.</li>
+                    <li>Click <strong>Create Body by Trajectory</strong> and select the profile.</li>
+                    <li>Export the result with <strong>Export to STEP</strong>.</li>
+                </ol>
+            </div>
+
+            <div class="ru">
+                <ol>
+                    <li>Создайте <strong>Spreadsheet</strong> и заполните колонки A, B, C координатами X, Y, Z.</li>
+                    <li>Переключитесь на верстак <strong>Route Builder</strong>.</li>
+                    <li>Нажмите <strong>Create Route</strong> → выберите таблицу.</li>
+                    <li>На вкладке <strong>Builder</strong> выберите ось и длину, нажмите <strong>Add Segment</strong> (или <code>Ctrl+Enter</code>).</li>
+                    <li>На вкладке <strong>Vectors</strong> при необходимости отредактируйте длины сегментов.</li>
+                    <li>Нажмите <strong>Create Body by Trajectory</strong> и выберите профиль.</li>
+                    <li>Экспортируйте результат через <strong>Export to STEP</strong>.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- ============ BUILDER ============ -->
+        <section id="builder">
+            <h2 class="en active">Builder tab</h2>
+            <h2 class="ru">Вкладка Builder</h2>
+
+            <div class="en active">
+                <p>The Builder tab is used to add orthogonal segments to the route. Choose an axis (+X, -X, +Y, -Y, +Z, -Z) and a length, then click <strong>Add Segment</strong>.</p>
+                <p>A color-coded phantom shows the projected segment: red for X, green for Y, blue for Z.</p>
+                <img src="img/02-builder.png" alt="Builder tab">
+                <div class="tip">
+                    <strong>Tip:</strong> Use <code>Ctrl+1..6</code> to quickly switch axes. Press <code>Ctrl+Enter</code> to add a segment without clicking the button.
+                </div>
+            </div>
+
+            <div class="ru">
+                <p>Вкладка Builder предназначена для добавления ортогональных сегментов. Выберите ось (+X, -X, +Y, -Y, +Z, -Z) и длину, затем нажмите <strong>Add Segment</strong>.</p>
+                <p>Цветной фантом показывает проектируемый сегмент: красный — X, зелёный — Y, синий — Z.</p>
+                <img src="img/02-builder.png" alt="Вкладка Builder">
+                <div class="tip">
+                    <strong>Совет:</strong> Используйте <code>Ctrl+1..6</code> для быстрого выбора оси. Нажмите <code>Ctrl+Enter</code>, чтобы добавить сегмент без кнопки.
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ POINTS ============ -->
+        <section id="points">
+            <h2 class="en active">Points tab</h2>
+            <h2 class="ru">Вкладка Points</h2>
+
+            <div class="en active">
+                <p>The Points tab shows all trajectory points with their X, Y, Z coordinates. Double-click a row to highlight the point in the 3D view.</p>
+                <img src="img/08-points.png" alt="Points tab">
+                <p>Buttons:</p>
+                <ul>
+                    <li><strong>Refresh</strong> — reload the table.</li>
+                    <li><strong>Copy All</strong> — copy coordinates to clipboard (TSV).</li>
+                    <li><strong>Export CSV</strong> — save coordinates to a CSV file.</li>
+                    <li><strong>Delete Last</strong> — remove the last segment.</li>
+                </ul>
+            </div>
+
+            <div class="ru">
+                <p>Вкладка Points показывает все точки траектории с координатами X, Y, Z. Двойной клик по строке подсвечивает точку в 3D-виде.</p>
+                <img src="img/08-points.png" alt="Вкладка Points">
+                <p>Кнопки:</p>
+                <ul>
+                    <li><strong>Refresh</strong> — обновить таблицу.</li>
+                    <li><strong>Copy All</strong> — копировать координаты в буфер (TSV).</li>
+                    <li><strong>Export CSV</strong> — сохранить координаты в CSV.</li>
+                    <li><strong>Delete Last</strong> — удалить последний сегмент.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============ VECTORS ============ -->
+        <section id="vectors">
+            <h2 class="en active">Vectors tab</h2>
+            <h2 class="ru">Вкладка Vectors</h2>
+
+            <div class="en active">
+                <p>The Vectors tab shows the route as a list of segments: direction (<code>DIR</code>) and length (<code>LEN</code>).</p>
+                <p><strong>Double-click on a LEN cell</strong> to edit the segment length. The coordinates of all subsequent points recalculate automatically.</p>
+                <img src="img/03-vectors.png" alt="Vectors tab">
+                <div class="warning">
+                    <strong>Note:</strong> DIR is read-only. Segment overlap is forbidden — an edit that creates an overlap will be rolled back.
+                </div>
+            </div>
+
+            <div class="ru">
+                <p>Вкладка Vectors показывает трассу в виде списка сегментов: направление (<code>DIR</code>) и длина (<code>LEN</code>).</p>
+                <p><strong>Двойной клик по ячейке LEN</strong> — редактирование длины сегмента. Координаты всех последующих точек пересчитываются автоматически.</p>
+                <img src="img/03-vectors.png" alt="Вкладка Vectors">
+                <div class="warning">
+                    <strong>Внимание:</strong> DIR доступен только для чтения. Наложение сегментов запрещено — правка, создающая наложение, будет откачена.
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ ATTACHMENT ============ -->
+        <section id="attachment">
+            <h2 class="en active">Attachment tab</h2>
+            <h2 class="ru">Вкладка Attachment</h2>
+
+            <div class="en active">
+                <p>The Attachment tab allows you to attach the route to an existing geometry: vertex, edge, or face.</p>
+                <ol>
+                    <li>Select a vertex, edge, or face in 3D.</li>
+                    <li>Click <strong>Change Attachment</strong>.</li>
+                </ol>
+                <p>The route start will be moved to the selected point. A green marker shows the current attachment.</p>
+                <img src="img/04-attachment.png" alt="Attachment tab">
+                <img src="img/05-attachment-face.png" alt="Attachment to face">
+                <div class="tip">
+                    <strong>Tip:</strong> Use selection filters (Vertex/Edge/Face) to avoid mistakes.
+                </div>
+            </div>
+
+            <div class="ru">
+                <p>Вкладка Attachment позволяет привязать трассу к существующей геометрии: вершине, ребру или грани.</p>
+                <ol>
+                    <li>Выделите вершину, ребро или грань в 3D.</li>
+                    <li>Нажмите <strong>Change Attachment</strong>.</li>
+                </ol>
+                <p>Начало трассы переместится в выбранную точку. Зелёный маркер показывает текущую привязку.</p>
+                <img src="img/04-attachment.png" alt="Вкладка Attachment">
+                <img src="img/05-attachment-face.png" alt="Привязка к грани">
+                <div class="tip">
+                    <strong>Совет:</strong> Используйте фильтры выбора (Vertex/Edge/Face), чтобы избежать ошибок.
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ BODY ============ -->
+        <section id="body">
+            <h2 class="en active">Create Body by Trajectory</h2>
+            <h2 class="ru">Создание тела по траектории</h2>
+
+            <div class="en active">
+                <p>Click <strong>Create Body by Trajectory</strong> to generate a solid body along the route. Choose a profile type:</p>
+                <ul>
+                    <li><strong>Circle (pipe)</strong> — standard DN diameters from DN15 to DN500, with wall thickness.</li>
+                    <li><strong>Square</strong> — side from 20 to 100 mm, with wall thickness.</li>
+                    <li><strong>Rectangle</strong> — standard sizes from 40x20 to 180x100 mm, with wall thickness.</li>
+                    <li><strong>Custom size</strong> — any value.</li>
+                </ul>
+                <img src="img/06-pipecreator.png" alt="Create Body dialog">
+                <p>The body is generated automatically with the chosen profile and updates when the route changes.</p>
+                <img src="img/07-pipe.png" alt="Pipe result">
+                <div class="tip">
+                    <strong>Tip:</strong> To smooth corners of the route, set a <code>Fillet Radius</code> in the route's properties — the body will follow rounded corners.
+                </div>
+            </div>
+
+            <div class="ru">
+                <p>Нажмите <strong>Create Body by Trajectory</strong>, чтобы создать тело вдоль трассы. Выберите тип профиля:</p>
+                <ul>
+                    <li><strong>Circle (pipe)</strong> — стандартные DN от DN15 до DN500 с толщиной стенки.</li>
+                    <li><strong>Square</strong> — сторона от 20 до 100 мм с толщиной стенки.</li>
+                    <li><strong>Rectangle</strong> — стандартные размеры от 40x20 до 180x100 мм с толщиной стенки.</li>
+                    <li><strong>Custom size</strong> — любое значение.</li>
+                </ul>
+                <img src="img/06-pipecreator.png" alt="Диалог создания тела">
+                <p>Тело генерируется автоматически по выбранному профилю и обновляется при изменении трассы.</p>
+                <img src="img/07-pipe.png" alt="Результат — труба">
+                <div class="tip">
+                    <strong>Совет:</strong> Чтобы скруглить углы трассы, задайте <code>Fillet Radius</code> в свойствах — тело получит скруглённые углы.
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ STEP ============ -->
+        <section id="step">
+            <h2 class="en active">STEP Export</h2>
+            <h2 class="ru">Экспорт в STEP</h2>
+
+            <div class="en active">
+                <p>Click <strong>Export to STEP</strong> to export bodies to a STEP file. If the document contains multiple bodies, a selection dialog appears.</p>
+                <img src="img/09-step-export.png" alt="STEP export">
+            </div>
+
+            <div class="ru">
+                <p>Нажмите <strong>Export to STEP</strong>, чтобы экспортировать тела в файл STEP. Если в документе несколько тел, появится диалог выбора.</p>
+                <img src="img/09-step-export.png" alt="Экспорт в STEP">
+            </div>
+        </section>
+
+        <!-- ============ HOTKEYS ============ -->
+        <section id="hotkeys">
+            <h2 class="en active">Hotkeys</h2>
+            <h2 class="ru">Горячие клавиши</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th class="en active">Keys</th>
+                        <th class="en active">Action</th>
+                        <th class="ru">Клавиши</th>
+                        <th class="ru">Действие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Ctrl+Enter</code></td>
+                        <td class="en active">Add segment</td>
+                        <td class="ru">Добавить сегмент</td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl+Z</code></td>
+                        <td class="en active">Remove last segment</td>
+                        <td class="ru">Удалить последний сегмент</td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl+1</code></td>
+                        <td class="en active">Select axis +X</td>
+                        <td class="ru">Выбрать ось +X</td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl+2</code></td>
+                        <td class="en active">Select axis -X</td>
+                        <td class="ru">Выбрать ось -X</td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl+3</code></td>
+                        <td class="en active">Select axis +Y</td>
+                        <td class="ru">Выбрать ось +Y</td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl+4</code></td>
+                        <td class="en active">Select axis -Y</td>
+                        <td class="ru">Выбрать ось -Y</td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl+5</code></td>
+                        <td class="en active">Select axis +Z</td>
+                        <td class="ru">Выбрать ось +Z</td>
+                    </tr>
+                    <tr>
+                        <td><code>Ctrl+6</code></td>
+                        <td class="en active">Select axis -Z</td>
+                        <td class="ru">Выбрать ось -Z</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ============ TIPS ============ -->
+        <section id="tips">
+            <h2 class="en active">Tips & Troubleshooting</h2>
+            <h2 class="ru">Советы и решения</h2>
+
+            <div class="en active">
+                <h3>Tips</h3>
+                <ul>
+                    <li>Use <strong>Fillet Radius</strong> in route properties to smooth corners.</li>
+                    <li>Use the <strong>Show Points</strong> button to visualize trajectory points with numbers.</li>
+                    <li>Enable <strong>selection filters</strong> (Vertex/Edge/Face) to avoid mistakes when attaching.</li>
+                    <li>Use <strong>Export CSV</strong> to save coordinates for use in Excel.</li>
+                    <li>The body updates automatically when the route changes — no need to recreate it.</li>
+                </ul>
+
+                <h3>Troubleshooting</h3>
+                <ul>
+                    <li><strong>Segment not added</strong> — the point already exists or overlaps an existing segment. Check the Vectors table.</li>
+                    <li><strong>Attachment lost</strong> — the referenced object was deleted. Reset the attachment and reattach.</li>
+                    <li><strong>Markers not visible</strong> — zoom out or reset the view (<code>View → Fit All</code>).</li>
+                    <li><strong>Body not updating</strong> — press <code>Ctrl+R</code> (Recompute).</li>
+                </ul>
+            </div>
+
+            <div class="ru">
+                <h3>Советы</h3>
+                <ul>
+                    <li>Используйте <strong>Fillet Radius</strong> в свойствах трассы, чтобы скруглить углы.</li>
+                    <li>Кнопка <strong>Show Points</strong> показывает точки траектории с номерами.</li>
+                    <li>Включите <strong>фильтры выбора</strong> (Vertex/Edge/Face) при привязке.</li>
+                    <li>Используйте <strong>Export CSV</strong> для сохранения координат в Excel.</li>
+                    <li>Тело обновляется автоматически при изменении трассы — не нужно создавать заново.</li>
+                </ul>
+
+                <h3>Решения проблем</h3>
+                <ul>
+                    <li><strong>Сегмент не добавляется</strong> — точка уже существует или накладывается на существующий сегмент. Проверьте таблицу Vectors.</li>
+                    <li><strong>Привязка потеряна</strong> — объект, к которому была привязка, удалён. Сбросьте привязку и привяжите заново.</li>
+                    <li><strong>Маркеры не видны</strong> — уменьшите масштаб или сбросьте вид (<code>Вид → Показать всё</code>).</li>
+                    <li><strong>Тело не обновляется</strong> — нажмите <code>Ctrl+R</code> (Пересчитать).</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============ LICENSE ============ -->
+        <section id="license">
+            <h2 class="en active">License</h2>
+            <h2 class="ru">Лицензия</h2>
+
+            <div class="en active">
+                <ul>
+                    <li>Code: <strong>LGPL-2.1-or-later</strong></li>
+                    <li>Assets (icons): <strong>CC-BY-SA-4.0</strong></li>
+                </ul>
+                <p>Author: <strong>VibeCADer</strong> — <a href="https://github.com/vibecader">GitHub</a></p>
+            </div>
+
+            <div class="ru">
+                <ul>
+                    <li>Код: <strong>LGPL-2.1-or-later</strong></li>
+                    <li>Ресурсы (иконки): <strong>CC-BY-SA-4.0</strong></li>
+                </ul>
+                <p>Автор: <strong>VibeCADer</strong> — <a href="https://github.com/vibecader">GitHub</a></p>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<footer>
+    <p>Route Builder — FreeCAD Workbench</p>
+    <p><a href="https://github.com/vibecader/FreeCAD-RouteBuilder">github.com/vibecader/FreeCAD-RouteBuilder</a></p>
+</footer>
+
+<script>
+    function setLang(lang) {
+        document.querySelectorAll('.en').forEach(el => {
+            el.classList.toggle('active', lang === 'en');
+        });
+        document.querySelectorAll('.ru').forEach(el => {
+            el.classList.toggle('active', lang === 'ru');
+        });
+        document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+        document.getElementById('btn-ru').classList.toggle('active', lang === 'ru');
+        document.documentElement.lang = lang;
+    }
+</script>
+
+</body>
+</html>
