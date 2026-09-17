@@ -28,6 +28,11 @@ Add STL, IGES, OBJ export options alongside the existing STEP export.
 
 **Why:** STL for 3D printing, IGES for other CAD systems.
 
+### Toggleable overlap check
+Allow the user to disable self-intersection protection for specific scenarios (returning along the same line, debugging, point-to-point segments).
+
+**Why:** Some legitimate use cases require overlapping segments. A toggle gives flexibility without removing the default safety net.
+
 ---
 
 ## Medium

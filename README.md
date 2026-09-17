@@ -111,6 +111,7 @@ See [ROADMAP.md](ROADMAP.md) for the full list of planned features.
 - **Trajectory cloning** — duplicate a route
 - **User presets** — save and reuse profile sets
 - **Additional export formats** — STL, IGES, OBJ
+- **Toggleable overlap check** — disable self-intersection protection
 
 *Contributions are welcome!*
 
