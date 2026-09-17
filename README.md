@@ -101,6 +101,19 @@ Full user manual (English + Russian): [docs/manual.html](docs/manual.html)
 - **FreeCAD** 1.0 or newer
 - **PySide6** (bundled with FreeCAD)
 
+## Roadmap
+
+See [ROADMAP.md](ROADMAP.md) for the full list of planned features.
+
+**Short version:**
+
+- **Import from CSV/Excel** — load coordinates from a file
+- **Trajectory cloning** — duplicate a route
+- **User presets** — save and reuse profile sets
+- **Additional export formats** — STL, IGES, OBJ
+
+*Contributions are welcome!*
+
 ## License
 
 - Code: [LGPL-2.1-or-later](Lic/LICENSE.txt)
